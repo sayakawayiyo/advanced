@@ -122,4 +122,24 @@ class UserBackend extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->auth_key === $authKey;
     }
+
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public function generateAuthkey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    public static function findByUsername($username)
+    {
+        return static::findone(['username' => $username]);
+    }
+
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
 }

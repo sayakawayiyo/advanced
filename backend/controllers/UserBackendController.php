@@ -36,7 +36,6 @@ class UserBackendController extends Controller
      */
     public function actionIndex()
     {
-        echo phpinfo();
         $searchModel = new UserBackendSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
