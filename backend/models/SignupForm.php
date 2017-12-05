@@ -26,14 +26,14 @@ class SignupForm extends Model
             ['username', 'required', 'message' => '用户名不可以为空'],
             ['username', 'unique', 'targetClass' => '\backend\models\UserBackend', 'message' => '用户名已存在'],
             ['username', 'string', 'min' => 2, 'max' => 255],
-            ['email' => 'filter', 'filter' => 'trim'],
-            ['email' => 'required', 'message' => '邮箱不可以为空'],
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required', 'message' => '邮箱不可以为空'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\backend\models\UserBackend', 'message' => '邮箱已经被设置了.'],
             ['password', 'required', 'message' => '密码不可以为空'],
             ['password', 'string', 'min' => 6, 'tooShort' => '密码至少填写6位'],
-            [['create_at', 'updated_at'], 'defaut', 'value' => date('Y-m-d H:i:s')]
+            [['created_at', 'updated_at'], 'default', 'value' => date('Y-m-d H:i:s')]
         ];
     }
 
