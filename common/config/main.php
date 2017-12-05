@@ -20,6 +20,7 @@ return [
             'schemaCacheDuration' => 24*3600,
             'schemaCache' => 'cache',
         ],
+        'authManager' => ['class' => 'yii\rbac\DbManager']
     ],
     //配置语言
     'language' => 'zh-CN',
