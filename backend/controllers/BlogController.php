@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\components\MyBehavior;
 use Yii;
 use backend\models\Blog;
 use backend\models\BlogSearch;
@@ -21,6 +22,8 @@ class BlogController extends Controller
     public function behaviors()
     {
         return [
+            //附加行为
+            'myBehavior' => MyBehavior::className(),
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -40,6 +43,12 @@ class BlogController extends Controller
 //        if (!Yii::$app->user->can('/blog/index')) {
 //            throw new ForbiddenHttpException('没权限访问');
 //        }
+
+        //操作行为类
+//        $myBehavior = $this->getBehavior('myBehavior');
+//        $isGuest = $myBehavior->isGuest();
+
+//        $isGuest = $this->isGuest();
 
         $searchModel = new BlogSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -130,6 +139,7 @@ class BlogController extends Controller
 
     public function beforeAction($action)
     {
+        parent::beforeAction($action);
         $currentRequestRoute = $action->getUniqueId();
         if (Yii::$app->user->can('/' . $currentRequestRoute)) {
             throw new ForbiddenHttpException('没有权限访问.');
