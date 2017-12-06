@@ -23,7 +23,10 @@ class BlogController extends Controller
     {
         return [
             //附加行为
-            'myBehavior' => MyBehavior::className(),
+//            'myBehavior' => MyBehavior::className(),
+            'as access' => [
+                'class' => 'backend\components\AccessControl'
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -141,7 +144,7 @@ class BlogController extends Controller
     {
         parent::beforeAction($action);
         $currentRequestRoute = $action->getUniqueId();
-        if (Yii::$app->user->can('/' . $currentRequestRoute)) {
+        if (!Yii::$app->user->can('/' . $currentRequestRoute)) {
             throw new ForbiddenHttpException('没有权限访问.');
         }
         return true;
