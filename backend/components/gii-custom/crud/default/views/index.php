@@ -108,11 +108,11 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 <?= $generator->enablePjax ? '<?php Pjax::end(); ?>' : '' ?>
 </div>
 
-<?= "<?php" ?>
+<?= "<?php " ?>
 // 创建modal
 Modal::begin([
-'id' => 'operate-modal',
-'header' => '<h4 class="modal-title"></h4>',
+    'id' => 'operate-modal',
+    'header' => '<h4 class="modal-title"></h4>',
 ]);
 Modal::end();
 // 创建
@@ -120,24 +120,24 @@ $requestCreateUrl = Url::toRoute('create');
 // 更新
 $requestUpdateUrl = Url::toRoute('update');
 $js = <<<JS
-// 创建操作
-$('#create').on('click', function () {
-$('.modal-title').html('创建');
-$.get('{$requestCreateUrl}',
-function (data) {
-$('.modal-body').html(data);
-}
-);
-});
-// 更新操作
-$('.btn-update').on('click', function () {
-$('.modal-title').html('信息');
-$.get('{$requestUpdateUrl}', { id: $(this).closest('tr').data('key') },
-function (data) {
-$('.modal-body').html(data);
-}
-);
-});
+    // 创建操作
+    $('#create').on('click', function () {
+        $('.modal-title').html('创建');
+        $.get('{$requestCreateUrl}',
+            function (data) {
+                $('.modal-body').html(data);
+            }
+        );
+    });
+    // 更新操作
+    $('.btn-update').on('click', function () {
+        $('.modal-title').html('信息');
+        $.get('{$requestUpdateUrl}', { id: $(this).closest('tr').data('key') },
+            function (data) {
+                $('.modal-body').html(data);
+            }
+        );
+    });
 JS;
 $this->registerJs($js);
 ?>
