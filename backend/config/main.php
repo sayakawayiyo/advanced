@@ -74,6 +74,18 @@ return [
                 ],
             ],
         ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => [
+                        //'basePath' => '@app/themes/spring',
+                        //'baseUrl' => '@web/themes/spring',
+//                        '@app/themes/spring',
+//                        '@app/themes/christmas',
+                    ]
+                ]
+            ]
+        ],
     ],
     'params' => $params,
     'as access' => [
@@ -82,4 +94,7 @@ return [
             'site/*',
         ],
     ],
+    'as theme' => [
+       'class' => 'backend\components\ThemeControl'
+    ]
 ];
