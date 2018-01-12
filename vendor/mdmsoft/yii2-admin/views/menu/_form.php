@@ -25,9 +25,15 @@ $this->registerJs($this->render('_script.js'));
         <div class="col-sm-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => 128]) ?>
 
-            <?= $form->field($model, 'parent_name')->textInput(['id' => 'parent_name']) ?>
-
-            <?= $form->field($model, 'route')->textInput(['id' => 'route']) ?>
+            <?= $form->field($model, 'parent')
+                ->dropDownList(Menu::find()
+                    ->select(['name','id'])
+                    ->indexBy('id')
+                    ->column(),
+                    ['prompt'=>'请选择父级']); ?>
+            <?= $form->field($model, 'route')
+                ->dropDownList(array_combine(Menu::getSavedRoutes(),Menu::getSavedRoutes()),
+                    ['prompt'=>'请选择路由']); ?>
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'order')->input('number') ?>
