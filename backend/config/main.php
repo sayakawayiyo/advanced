@@ -64,6 +64,7 @@ return [
                     'skin' => 'skin-blue',
                 ],
             ],
+            'appendTimestamp' => true
         ],
         'authManager' => [
             'class' => 'yii\rbac\Dbmanager',

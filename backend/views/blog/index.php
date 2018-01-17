@@ -7,6 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel backend\models\BlogSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+\backend\assets\TestAsset::register($this);
+
 $this->title = 'Blogs';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
