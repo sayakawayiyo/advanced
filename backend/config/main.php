@@ -43,14 +43,21 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
+            //是否开启美化效果
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            //是否显示脚本名index.php
+            'showScriptName' => true,
+            'enableStrictParsing' => true,
+            'suffix' => '.html',
             'rules' => [
+                '<controller:\w+>/<action:\w+>/<page:\d+>' => '<controller>/<action>',
+                '/blogs/<id:\d+>' => '/blog/view',
+                '/blogs' => '/blog/index',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                "<controller:\w+>/<action:\w+>"=>"<controller>/<action>",
             ],
         ],
-        */
         'assetManager' => [
             'bundles' => [
                 'dmstr\web\AdminLteAsset' => [
