@@ -56,7 +56,10 @@ class LoginForm extends Model
      */
     public function login()
     {
+        // 调用validate方法 进行rule的校验，其中包括用户是否存在和密码是否正确的校验
         if ($this->validate()) {
+            Yii::$app->user->on(yii\web\User::EVENT_AFTER_LOGIN, [$this, 'onAfterLogin']);
+            //校验成功后，session保存用户信息
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
         
@@ -75,5 +78,12 @@ class LoginForm extends Model
         }
 
         return $this->_user;
+    }
+
+    public function onAfterLogin($event)
+    {
+        $identity = $event->identity;
+        $date = date('Y-m-d H:i:s');
+        yii::info("id={$identity->id}的用户最后一次登录系统时间是{$date}");
     }
 }

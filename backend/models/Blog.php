@@ -20,6 +20,14 @@ class Blog extends \yii\db\ActiveRecord
 {
     public $category;
 
+    public function init()
+    {
+        parent::init();
+        $this->on(self::EVENT_BEFORE_INSERT, [$this, 'onBeforeInsert']);
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'onAfterInsert']);
+    }
+
+
     /**
      * @inheritdoc
      */
@@ -34,10 +42,11 @@ class Blog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'content', 'created_at', 'updated_at', 'category'], 'required'],
+//            [['id', 'content', 'created_at', 'updated_at', 'category'], 'required'],
+            [['title', 'content', 'category'], 'required'],
             [['id', 'views', 'is_delete'], 'integer'],
             [['content'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+//            [['created_at', 'updated_at'], 'safe'],
             [['title'], 'string', 'max' => 100],
         ];
     }
@@ -63,5 +72,15 @@ class Blog extends \yii\db\ActiveRecord
         $query = static::find();
         $enums = $query->all();
         return $enums ? ArrayHelper::map($enums, 'id', $field) : [];
+    }
+
+    public function onBeforeInsert()
+    {
+        yii::info('This is beforeInsert event.');
+    }
+
+    public function onAfterInsert()
+    {
+        yii::info('This is afterInsert event.');
     }
 }
