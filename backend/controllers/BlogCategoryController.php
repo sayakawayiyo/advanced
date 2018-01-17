@@ -1,22 +1,20 @@
 <?php
 
-namespace backend\controllers;
+namespace backend\Controllers;
 
-use backend\components\MyBehavior;
-use backend\models\BlogCategory;
-use Yii;
 use backend\models\Blog;
-use backend\models\BlogSearch;
+use Yii;
+use backend\models\BlogCategory;
+use backend\models\BlogCategorySearch;
 use yii\db\Exception;
 use yii\web\Controller;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * BlogController implements the CRUD actions for Blog model.
+ * BlogCategoryController implements the CRUD actions for BlogCategory model.
  */
-class BlogController extends Controller
+class BlogCategoryController extends Controller
 {
     /**
      * @inheritdoc
@@ -24,11 +22,6 @@ class BlogController extends Controller
     public function behaviors()
     {
         return [
-            //附加行为
-//            'myBehavior' => MyBehavior::className(),
-            'as access' => [
-                'class' => 'backend\components\AccessControl'
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -39,23 +32,12 @@ class BlogController extends Controller
     }
 
     /**
-     * Lists all Blog models.
+     * Lists all BlogCategory models.
      * @return mixed
-     * @throws ForbiddenHttpException
      */
     public function actionIndex()
     {
-//        if (!Yii::$app->user->can('/blog/index')) {
-//            throw new ForbiddenHttpException('没权限访问');
-//        }
-
-        //操作行为类
-//        $myBehavior = $this->getBehavior('myBehavior');
-//        $isGuest = $myBehavior->isGuest();
-
-//        $isGuest = $this->isGuest();
-
-        $searchModel = new BlogSearch();
+        $searchModel = new BlogCategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -65,7 +47,7 @@ class BlogController extends Controller
     }
 
     /**
-     * Displays a single Blog model.
+     * Displays a single BlogCategory model.
      * @param integer $id
      * @return mixed
      */
@@ -76,16 +58,15 @@ class BlogController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Blog model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     * @throws \Exception
-     */
-    public function actionCreate()
-    {
-//        $model = new Blog();
-//        $model->load(Yii::$app->request->post());
+//    /**
+//     * Creates a new BlogCategory model.
+//     * If creation is successful, the browser will be redirected to the 'view' page.
+//     * @return mixed
+//     */
+//    public function actionCreate()
+//    {
+//        $model = new BlogCategory();
+//
 //        if ($model->load(Yii::$app->request->post()) && $model->save()) {
 //            return $this->redirect(['view', 'id' => $model->id]);
 //        } else {
@@ -93,8 +74,10 @@ class BlogController extends Controller
 //                'model' => $model,
 //            ]);
 //        }
+//    }
 
-
+    public function actionCreate()
+    {
         $model = new Blog();
         // 注意这里调用的是validate，非save,save我们放在了事务中处理了
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
@@ -130,7 +113,7 @@ class BlogController extends Controller
                 //提交
                 $transaction->commit();
                 return $this->redirect(['index']);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $transaction->rollBack();
                 throw $e;
             }
@@ -138,7 +121,7 @@ class BlogController extends Controller
     }
 
     /**
-     * Updates an existing Blog model.
+     * Updates an existing BlogCategory model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -146,64 +129,18 @@ class BlogController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                /**
-                 *current model save
-                 */
-                $model->save(false);
-                $blogId = $model->id;
-                /**
-                 * batch insert category
-                 * 我们在Blog模型中设置过category字段的验证方式是required,因此下面foreach使用之前无需再做判断
-                 */
-                $data = [];
-                foreach ($model->category as $kv => $v) {
-                    $data[] = [$blogId, $v];
-                }
-                //获取BlogCategory模型的所有属性和表名
-                $blogCategory = new BlogCategory();
-                $attributes = ['blog_id', 'category_id'];
-                $tableName = $blogCategory::tableName();
-                $db = BlogCategory::getDb();
-                // 先全部删除对应的栏目
-                $sql = "DELETE FROM `{$tableName}` WHERE `blog_id` = :bid";
-                $db->createCommand($sql, ['bid' => $id])->execute();
 
-                // 再批量插入栏目到BlogCategory::tableName()表
-                $db->createCommand()->batchInsert(
-                    $tableName,
-                    $attributes,
-                    $data
-                )->execute();
-                //提交
-                $transaction->commit();
-                return $this->redirect(['index']);
-            } catch (Exception $e) {
-                //回滚
-                $transaction->rollBack();
-                throw $e;
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            // 获取博客关联的栏目
-            $model->category = BlogCategory::getRelationCategorys($id);
             return $this->render('update', [
-                'model' => $model
+                'model' => $model,
             ]);
         }
-//        $model->category = BlogCategory::getRelateCategorys($id);
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        } else {
-//            return $this->render('update', [
-//                'model' => $model,
-//            ]);
-//        }
     }
 
     /**
-     * Deletes an existing Blog model.
+     * Deletes an existing BlogCategory model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -216,28 +153,18 @@ class BlogController extends Controller
     }
 
     /**
-     * Finds the Blog model based on its primary key value.
+     * Finds the BlogCategory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Blog the loaded model
+     * @return BlogCategory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Blog::findOne($id)) !== null) {
+        if (($model = BlogCategory::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    public function beforeAction($action)
-    {
-        parent::beforeAction($action);
-        $currentRequestRoute = $action->getUniqueId();
-        if (!Yii::$app->user->can('/' . $currentRequestRoute)) {
-            throw new ForbiddenHttpException('没有权限访问.');
-        }
-        return true;
     }
 }

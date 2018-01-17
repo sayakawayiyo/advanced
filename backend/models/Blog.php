@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "blog".
@@ -17,6 +18,8 @@ use Yii;
  */
 class Blog extends \yii\db\ActiveRecord
 {
+    public $category;
+
     /**
      * @inheritdoc
      */
@@ -31,7 +34,7 @@ class Blog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'content', 'created_at', 'updated_at'], 'required'],
+            [['id', 'content', 'created_at', 'updated_at', 'category'], 'required'],
             [['id', 'views', 'is_delete'], 'integer'],
             [['content'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
@@ -53,5 +56,12 @@ class Blog extends \yii\db\ActiveRecord
             'created_at' => '添加时间',
             'updated_at' => '更新时间',
         ];
+    }
+    
+    public static function dropDownList($field)
+    {
+        $query = static::find();
+        $enums = $query->all();
+        return $enums ? ArrayHelper::map($enums, 'id', $field) : [];
     }
 }
