@@ -15,6 +15,8 @@ use yii\helpers\ArrayHelper;
  * @property integer $is_delete
  * @property string $created_at
  * @property string $updated_at
+ * @property string $file
+ * @property string $file2
  */
 class Blog extends \yii\db\ActiveRecord
 {
@@ -25,6 +27,7 @@ class Blog extends \yii\db\ActiveRecord
         parent::init();
         $this->on(self::EVENT_BEFORE_INSERT, [$this, 'onBeforeInsert']);
         $this->on(self::EVENT_AFTER_INSERT, [$this, 'onAfterInsert']);
+        $this->on(self::EVENT_BEFORE_UPDATE, [$this, 'onBeforeUpdate']);
     }
 
 
@@ -48,6 +51,8 @@ class Blog extends \yii\db\ActiveRecord
             [['content'], 'string'],
 //            [['created_at', 'updated_at'], 'safe'],
             [['title'], 'string', 'max' => 100],
+            [['file', 'file2'], 'safe'],
+            [['file'], 'string', 'max' => 255],
         ];
     }
 
@@ -76,11 +81,17 @@ class Blog extends \yii\db\ActiveRecord
 
     public function onBeforeInsert()
     {
+        is_array($this->file2) && $this->file2 && $this->file2 = implode(',', $this->file2);
         yii::info('This is beforeInsert event.');
     }
 
     public function onAfterInsert()
     {
         yii::info('This is afterInsert event.');
+    }
+
+    public function onBeforeUpdate()
+    {
+        is_array($this->file2) && $this->file2 && $this->file2 = implode(',', $this->file2);
     }
 }

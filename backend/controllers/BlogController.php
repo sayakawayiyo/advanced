@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\components\MyBehavior;
 use backend\models\BlogCategory;
+use common\components\Upload;
 use Yii;
 use backend\models\Blog;
 use backend\models\BlogSearch;
@@ -13,6 +14,7 @@ use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * BlogController implements the CRUD actions for Blog model.
@@ -267,5 +269,22 @@ class BlogController extends Controller
             ->leftJoin(['b' => 'blog_category'], 't.id=b.blog_id')
             ->where(['t.id' => 1])
             ->all();
+    }
+
+    public function actionUpload()
+    {
+        try {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model = new Upload();
+            $info = $model->upImage();
+
+            if ($info && is_array($info)) {
+                return $info;
+            } else {
+                return ['code' => 1, 'msg' => 'error'];
+            }
+        } catch (\Exception $e) {
+            return ['code' => 1, 'msg'=>$e->getMessage()];
+        }
     }
 }

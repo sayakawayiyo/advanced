@@ -2,6 +2,7 @@
 
 use backend\models\Category;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -39,7 +40,25 @@ use yii\widgets\ActiveForm;
 echo $form->field($model, 'title')->textInput(['maxlength' => true]);
 echo $form->field($model, 'content')->textarea(['maxlength' => true, 'rows' => 10]);
 echo $form->field($model, 'is_delete')->dropDownList(\backend\models\Blog::dropDownList('is_delete'));
-echo $form->field($model, 'category')->label('栏目')->checkboxList(Category::dropDownList())
+echo $form->field($model, 'category')->label('栏目')->checkboxList(Category::dropDownList());
+echo $form->field($model, 'file')->widget('manks\FileInput', [
+    'clientOptions' => [
+        'pick' => [
+            'multiple' => false
+        ],
+    ]
+]);
+echo $form->field($model, 'file2')->widget('manks\FileInput', [
+    'clientOptions' => [
+        'pick' => [
+            'multiple' => true
+        ],
+//        'server' => Url::to('blog/upload'),
+//        'accept' => [
+//            'extensions' => 'png'
+//        ]
+    ]
+]);
 ?>
 
 <div class="form_group">

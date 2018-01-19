@@ -94,6 +94,9 @@ return [
                 ]
             ]
         ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache'
+        ]
     ],
     'params' => $params,
     'as access' => [
