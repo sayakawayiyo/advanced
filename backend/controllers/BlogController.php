@@ -8,6 +8,7 @@ use Yii;
 use backend\models\Blog;
 use backend\models\BlogSearch;
 use yii\db\Exception;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -244,5 +245,27 @@ class BlogController extends Controller
             throw new ForbiddenHttpException('没有权限访问.');
         }
         return true;
+    }
+
+    public function actionTest()
+    {
+//        $sql = "SELECT * FROM `blog` WHERE id = :id";
+//        $result = Yii::$app->db->createCommand($sql)
+//            ->bindValues([':id' => 1])
+////            ->bindValue(':id', 4)
+////            ->queryAll();
+//        ->getRawSql();
+        $query = new Query;
+//        $result = $query->select(['username', 'email'])
+//            ->from('user')
+//            ->where(['username' => 'test1'])
+//            ->limit(5)
+//            ->all();
+//        $sql = $query->createCommand()->getSql();
+        $result = $query->select(['t.id', 't.title', 'b.category_id'])
+            ->from(['t' => 'blog'])
+            ->leftJoin(['b' => 'blog_category'], 't.id=b.blog_id')
+            ->where(['t.id' => 1])
+            ->all();
     }
 }
